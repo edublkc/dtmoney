@@ -10,6 +10,27 @@ createServer({
     transaction: Model
   },
 
+  seeds(server){
+    server.db.loadData({
+      transactions: [{
+        id: 1,
+        title: "Freelancer",
+        type: "deposit",
+        category: "Dev",
+        amount: 6000,
+        createdAt: new Date('12-21-22')
+      },
+      {
+        id: 2,
+        title: "Alugel",
+        type: "withdraw",
+        category: "Dev",
+        amount: 200,
+        createdAt: new Date('12-14-22')
+      }
+    ]
+    })
+  },
 
 
   routes(){
