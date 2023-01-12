@@ -1,52 +1,61 @@
 import { Container } from "./styled";
 
-import incomeImg from "../../assets/income.svg"
-import outcomeImg from "../../assets/outcome.svg"
-import totalImg from "../../assets/total.svg"
+import incomeImg from "../../assets/income.svg";
+import outcomeImg from "../../assets/outcome.svg";
+import totalImg from "../../assets/total.svg";
 import { useContext } from "react";
-import { TranscationContext } from "../../TranscationContext";
+import { TranscationContext, useTransaction } from "../../hooks/useTransactions";
 
-export function Summary(){
+export function Summary() {
+  const { transactions } = useTransaction();
 
-    const data = useContext(TranscationContext)
+  const summary = transactions.reduce(
+    function (acc, transaction) {
+      if (transaction.type === "deposit") {
+        acc.deposit += transaction.amount;
+        acc.total += transaction.amount;
+      } else {
+        acc.withdraw += transaction.amount;
+        acc.total -= transaction.amount;
+      }
 
-    return (
-        <Container>
-            <div>
-                <header>
-                    <p>Entradas</p>
-                    <img src={incomeImg} alt=""/>
-                </header>
+      return acc;
+    },
+    {
+      deposit: 0,
+      withdraw: 0,
+      total: 0,
+    }
+  );
 
-                <strong>
-                    R$1000,00
-                </strong>
+  return (
+    <Container>
+      <div>
+        <header>
+          <p>Entradas</p>
+          <img src={incomeImg} alt="" />
+        </header>
 
-            </div>
+        <strong>R${summary.deposit}</strong>
+      </div>
 
-            <div>
-                <header>
-                    <p>Saídas</p>
-                    <img src={outcomeImg} alt=""/>
-                </header>
+      <div>
+        <header>
+          <p>Saídas</p>
+          <img src={outcomeImg} alt="" />
+        </header>
 
-                <strong>
-                    - R$500,00
-                </strong>
+        <strong>- R${summary.withdraw}</strong>
+      </div>
 
-            </div>
+      <div className="hiligh-background">
+        <header>
+          <p>Total</p>
+          <img src={totalImg} alt="" />
+        </header>
 
-            <div className="hiligh-background">
-                <header>
-                    <p>Total</p>
-                    <img src={totalImg} alt=""/>
-                </header>
-
-                <strong>
-                     R$500,00
-                </strong>
-
-            </div>
-        </Container>
-    )
+        <strong>R${summary.total}</strong>
+      </div>
+    </Container>
+  );
 }
